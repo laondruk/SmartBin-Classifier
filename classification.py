@@ -15,12 +15,24 @@ from tensorflow.keras.optimizers import RMSprop
 from tensorflow.python.keras import activations
 from tensorflow.python.keras.layers.pooling import MaxPool2D
 
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+  # 텐서플로가 첫 번째 GPU에 1GB 메모리만 할당하도록 제한
+  try:
+    tf.config.experimental.set_virtual_device_configuration(
+        gpus[0],
+        [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
+  except RuntimeError as e:
+    # 프로그램 시작시에 가상 장치가 설정되어야만 합니다
+    print(e)
+
 
 ###################### 변수 #####################
-batch_size = 32
-epochs = 22
-img_height = 180
-img_width = 180
+batch_size = 16
+epochs = 150
+img_height = 360
+img_width = 360
+learning_rate = 0.0001
 #################################################
 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
@@ -45,7 +57,15 @@ print(class_names)
 
 
 #데이터 세트 구성 & 데이터 증강
+resize_and_rescale = tf.keras.Sequential([
+    layers.experimental.preprocessing.Rescaling(1. / 255, input_shape=(img_height, img_width, 3)),
+])
 
+augment = Sequential([
+    layers.experimental.preprocessing.RandomFlip("horizontal_and_vertical"),
+    layers.experimental.preprocessing.RandomRotation(0.1),
+    layers.experimental.preprocessing.RandomContrast(0.5)
+])
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
@@ -71,7 +91,8 @@ num_classes = 5
 
 
 model = Sequential([
-  layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
+  resize_and_rescale,
+  augment,
   layers.Conv2D(16, 3, padding='same', activation='relu'),
   layers.MaxPooling2D(),
   Dropout(0.1),
@@ -83,9 +104,10 @@ model = Sequential([
   layers.Dense(128, activation='relu'),
   layers.Dense(num_classes)
 ])
+adam = tf.keras.optimizers.Adam(learning_rate=learning_rate)
 
 #모델 컴파일
-model.compile(optimizer='adam',
+model.compile(optimizer=adam,
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
