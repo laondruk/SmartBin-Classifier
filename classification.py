@@ -29,11 +29,11 @@ from tensorflow.python.keras.layers.pooling import MaxPool2D
 
 
 ###################### 변수 #####################
-batch_size = 16
-epochs = 150
+batch_size = 32
+epochs = 100
 img_height = 360
-img_width = 360
-learning_rate = 0.0001
+img_width = 480
+learning_rate = 0.001
 #################################################
 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
@@ -65,7 +65,7 @@ resize_and_rescale = tf.keras.Sequential([
 augment = Sequential([
     layers.experimental.preprocessing.RandomFlip("horizontal_and_vertical"),
     layers.experimental.preprocessing.RandomRotation(0.1),
-    layers.experimental.preprocessing.RandomContrast(0.5)
+    layers.experimental.preprocessing.RandomContrast(0.3)
 ])
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
@@ -103,7 +103,7 @@ model = Sequential([
   layers.MaxPooling2D(),
   layers.Flatten(),
   layers.Dense(128, activation='relu'),
-  layers.Dense(num_classes)
+  layers.Dense(num_classes, activation="softmax")
 ])
 adam = tf.keras.optimizers.Adam(learning_rate=learning_rate)
 
@@ -131,7 +131,7 @@ val_loss=history.history['val_loss']
 
 epochs_range = range(epochs)
 
-plt.figure(figsize=(8, 8))
+plt.figure(figsize=(16, 8))
 plt.subplot(1, 2, 1)
 plt.plot(epochs_range, acc, label='Training Accuracy')
 plt.plot(epochs_range, val_acc, label='Validation Accuracy')
@@ -143,4 +143,5 @@ plt.plot(epochs_range, loss, label='Training Loss')
 plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
+plt.suptitle(f"learning rate: {str(learning_rate)}, batch size: {batch_size}, img size: {img_width} X {img_height}", fontsize=22)
 plt.show()
