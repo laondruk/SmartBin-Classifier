@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
-import tensorflow as tf
 import numpy as np
 import PIL
 import cv2
 import os
+os.add_dll_directory("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.4/bin")
+import tensorflow as tf
 
 from tensorflow import keras
 from tensorflow.keras import metrics, layers, models
@@ -15,24 +16,12 @@ from tensorflow.keras.optimizers import RMSprop
 from tensorflow.python.keras import activations
 from tensorflow.python.keras.layers.pooling import MaxPool2D
 
-gpus = tf.config.experimental.list_physical_devices('GPU')
-if gpus:
-  # 텐서플로가 첫 번째 GPU에 1GB 메모리만 할당하도록 제한
-  try:
-    tf.config.experimental.set_virtual_device_configuration(
-        gpus[0],
-        [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
-  except RuntimeError as e:
-    # 프로그램 시작시에 가상 장치가 설정되어야만 합니다
-    print(e)
-
-
 ###################### 변수 #####################
-batch_size = 16
-epochs = 150
+batch_size = 32
+epochs = 100
 img_height = 360
-img_width = 360
-learning_rate = 0.0001
+img_width = 480
+learning_rate = 0.001
 #################################################
 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
@@ -64,7 +53,7 @@ resize_and_rescale = tf.keras.Sequential([
 augment = Sequential([
     layers.experimental.preprocessing.RandomFlip("horizontal_and_vertical"),
     layers.experimental.preprocessing.RandomRotation(0.1),
-    layers.experimental.preprocessing.RandomContrast(0.5)
+    layers.experimental.preprocessing.RandomContrast(0.3)
 ])
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
@@ -102,7 +91,7 @@ model = Sequential([
   layers.MaxPooling2D(),
   layers.Flatten(),
   layers.Dense(128, activation='relu'),
-  layers.Dense(num_classes)
+  layers.Dense(num_classes, activation="softmax")
 ])
 adam = tf.keras.optimizers.Adam(learning_rate=learning_rate)
 
@@ -130,7 +119,7 @@ val_loss=history.history['val_loss']
 
 epochs_range = range(epochs)
 
-plt.figure(figsize=(8, 8))
+plt.figure(figsize=(16, 8))
 plt.subplot(1, 2, 1)
 plt.plot(epochs_range, acc, label='Training Accuracy')
 plt.plot(epochs_range, val_acc, label='Validation Accuracy')
@@ -142,4 +131,5 @@ plt.plot(epochs_range, loss, label='Training Loss')
 plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
+plt.suptitle(f"learning rate: {str(learning_rate)}, batch size: {batch_size}, img size: {img_width} X {img_height}", fontsize=22)
 plt.show()
