@@ -1,3 +1,5 @@
+import time
+start_time = time.time()
 import matplotlib.pyplot as plt
 import numpy as np
 import PIL
@@ -133,3 +135,5 @@ plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.suptitle(f"learning rate: {str(learning_rate)}, batch size: {batch_size}, img size: {img_width} X {img_height}", fontsize=22)
 plt.show()
+print(f"걸린 시간: {round((time.time() - start_time)/60, 2)}분\n모델 저장하는 중...")
+model.save(f"./classification-{learning_rate}, {batch_size}, {img_width} X {img_height}")
