@@ -1,11 +1,11 @@
 import time
 start_time = time.time()
+import os
+os.add_dll_directory("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.4/bin")
 import matplotlib.pyplot as plt
 import numpy as np
 import PIL
 import cv2
-import os
-os.add_dll_directory("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.4/bin")
 import tensorflow as tf
 
 from tensorflow import keras
@@ -20,14 +20,14 @@ from tensorflow.python.keras.layers.pooling import MaxPool2D
 
 ###################### 변수 #####################
 batch_size = 32
-epochs = 100
+epochs = 300
 img_height = 360
 img_width = 480
-learning_rate = 0.001
+initial_learning_rate = 0.0001
 #################################################
 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
-  'all',
+  './all',
   validation_split=0.2,
   subset="training",
   seed=123,
@@ -36,7 +36,7 @@ train_ds = tf.keras.preprocessing.image_dataset_from_directory(
   )
 
 val_ds = tf.keras.preprocessing.image_dataset_from_directory(
-  'all',
+  './all',
   validation_split=0.2,
   subset="validation",
   seed=123,
@@ -78,7 +78,7 @@ labels_batch = next(iter(normalized_ds))
 
 
 #모델 만들기
-num_classes = 5
+num_classes = 3
 
 
 model = Sequential([
@@ -91,11 +91,17 @@ model = Sequential([
   layers.MaxPooling2D(),
   layers.Conv2D(64, 3, padding='same', activation='relu'),
   layers.MaxPooling2D(),
+  layers.Conv2D(128, 3, padding='same', activation='relu'),
+  layers.MaxPooling2D(),
   layers.Flatten(),
-  layers.Dense(128, activation='relu'),
+  layers.Dense(256, activation='relu'),
   layers.Dense(num_classes, activation="softmax")
 ])
-adam = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+adam = tf.keras.optimizers.Adam(learning_rate=tf.keras.optimizers.schedules.ExponentialDecay(
+    initial_learning_rate,
+    decay_steps=100000,
+    decay_rate=0.98,
+    staircase=True))
 
 #모델 컴파일
 model.compile(optimizer=adam,
@@ -133,7 +139,7 @@ plt.plot(epochs_range, loss, label='Training Loss')
 plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
-plt.suptitle(f"learning rate: {str(learning_rate)}, batch size: {batch_size}, img size: {img_width} X {img_height}", fontsize=22)
+plt.suptitle(f"learning rate: {str(initial_learning_rate)}, batch size: {batch_size}, img size: {img_width} X {img_height}", fontsize=22)
 plt.show()
 print(f"걸린 시간: {round((time.time() - start_time)/60, 2)}분\n모델 저장하는 중...")
-model.save(f"./classification-{learning_rate}, {batch_size}, {img_width} X {img_height}")
+model.save(f"D:/classification-test-{initial_learning_rate}, {batch_size}, {img_width}X{img_height}.h5")
