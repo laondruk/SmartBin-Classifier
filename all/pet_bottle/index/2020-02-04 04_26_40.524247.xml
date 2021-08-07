@@ -1,0 +1,38 @@
+<annotation>
+	<folder>usual_pet</folder>
+	<filename>2020-02-04 04_26_40.524247.jpg</filename>
+	<path>C:\Users\sqidw\dev\smart_bin_proj\all\usual_pet\2020-02-04 04_26_40.524247.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>800</width>
+		<height>600</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>label</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>415</xmin>
+			<ymin>262</ymin>
+			<xmax>550</xmax>
+			<ymax>363</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>cap</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>419</xmin>
+			<ymin>76</ymin>
+			<xmax>504</xmax>
+			<ymax>137</ymax>
+		</bndbox>
+	</object>
+</annotation>

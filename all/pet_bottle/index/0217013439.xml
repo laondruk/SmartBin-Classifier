@@ -1,0 +1,26 @@
+<annotation>
+	<folder>usual_pet</folder>
+	<filename>0217013439.jpg</filename>
+	<path>C:\Users\sqidw\dev\smart_bin_proj\all\usual_pet\0217013439.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>200</width>
+		<height>150</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>label</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>58</xmin>
+			<ymin>77</ymin>
+			<xmax>112</xmax>
+			<ymax>125</ymax>
+		</bndbox>
+	</object>
+</annotation>
