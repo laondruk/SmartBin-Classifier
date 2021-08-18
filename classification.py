@@ -1,7 +1,7 @@
 import time
 start_time = time.time()
 import os
-os.add_dll_directory("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.4/bin")
+os.add_dll_directory("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.2/bin")
 import matplotlib.pyplot as plt
 import numpy as np
 import PIL
@@ -43,6 +43,8 @@ val_ds = tf.keras.preprocessing.image_dataset_from_directory(
   image_size=(img_height, img_width),
   batch_size=batch_size)
 
+
+# Vinyl, can, general, glass, paper, pet_bottle, pet_coffee, plastic
 class_names = train_ds.class_names
 print(class_names)
 
